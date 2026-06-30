@@ -8,7 +8,7 @@ import { useWishlist } from "../context/WishlistContext";
 import ProductReviews from "./ProductReviews";
 import ProductCard from "./ProductCard";
 
-const API_ROOT = "http://localhost:5000";
+const API_ROOT = "http://:5000";
 
 const ProductDetail = () => {
   const { id } = useParams();

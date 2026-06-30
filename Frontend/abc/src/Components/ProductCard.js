@@ -4,7 +4,7 @@ import { useToast } from "../context/ToastContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useCompare } from "../context/CompareContext";
 
-const API_ROOT = "http://localhost:5000";
+const API_ROOT = "https://mern-ecommerce-rmt9.onrender.com";
 
 const ProductCard = ({ mobile }) => {
   const { cartMap, addToCart } = useCart();

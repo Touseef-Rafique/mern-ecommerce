@@ -3,7 +3,7 @@ import { useCompare } from "../context/CompareContext";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 
-const API_ROOT = "http://localhost:5000";
+const API_ROOT = "https://mern-ecommerce-rmt9.onrender.com";
 
 const SPEC_ROWS = [
   { key: "price", label: "Price", format: (v) => (v != null ? `${v.toLocaleString()} PKR` : "—") },

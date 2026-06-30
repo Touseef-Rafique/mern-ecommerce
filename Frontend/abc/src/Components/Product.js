@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import "../styles/styles.css";
 import ProductCard from "./ProductCard";
 
-const API_ROOT = "http://localhost:5000";
+const API_ROOT = "https://mern-ecommerce-rmt9.onrender.com";
 
 const Product = () => {
   const { brand } = useParams();

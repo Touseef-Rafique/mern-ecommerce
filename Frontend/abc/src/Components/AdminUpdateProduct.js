@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "../styles/styles.css";
 import { useToast } from "../context/ToastContext";
 
-const API_ROOT = "http://localhost:5000";
+const API_ROOT = "https://mern-ecommerce-rmt9.onrender.com";
 
 const AdminUpdateProduct = () => {
   const { showToast } = useToast();
@@ -119,7 +119,7 @@ const AdminUpdateProduct = () => {
         <h2 className="title">Admin · Update Product</h2>
         <div className="empty-state">
           <h4>Products load nahi ho sake</h4>
-          <p>Backend chal raha hai check karein (localhost:5000) aur page refresh karein.</p>
+          <p>Backend chal raha hai check karein (https://mern-ecommerce-rmt9.onrender.com) aur page refresh karein.</p>
         </div>
       </div>
     );

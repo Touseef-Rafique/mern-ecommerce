@@ -28,7 +28,7 @@ const Cart = () => {
                       src={
                         item.image?.startsWith("http")
                           ? item.image
-                          : `http://localhost:5000/${item.image}`
+                          : `https://mern-ecommerce-rmt9.onrender.com/${item.image}`
                       }
                       className="img-fluid rounded p-2"
                       style={{ maxHeight: "160px", objectFit: "contain" }}
