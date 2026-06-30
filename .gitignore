@@ -1,0 +1,13 @@
+# Dependencies
+**/node_modules
+
+# Environment
+**/.env
+
+# Build
+**/build
+**/dist
+
+# Uploaded images
+Backend/uploads/
+Backend/uploads.zip
