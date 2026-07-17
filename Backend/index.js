@@ -6,6 +6,8 @@ import fs from "fs";
 import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 import connectDB from "./connection.js";
 import UserModel from "./models/UserModel.js";
@@ -17,10 +19,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Middleware: only lets the request through if the JWT is valid AND
-// carries isAdmin: true. Used to protect admin-only routes (like
-// updating a product's image) from being called directly via
-// Postman/curl by a non-admin user, even if they have a valid login token.
+
 const requireAdmin = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -40,7 +39,7 @@ const requireAdmin = (req, res, next) => {
   }
 };
 
-// ---------------- DB CONNECTION ----------------
+
 connectDB()
   .then(() => {
     console.log("✅ DB Connected");
@@ -49,36 +48,41 @@ connectDB()
     console.log("❌ DB Error:", err.message);
   });
 
-// ---------------- MIDDLEWARE ----------------
+
 app.use(
   cors({
-    origin: "*", // change later to your Vercel URL
+    origin: "*", 
   })
 );
 
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
 
-// ---------------- CREATE UPLOADS FOLDER ----------------
-if (!fs.existsSync("uploads")) {
-  fs.mkdirSync("uploads");
-}
 
-// ---------------- MULTER ----------------
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+// Cloudinary config — reads credentials from environment variables (set these on Render)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Images are uploaded straight to Cloudinary instead of local disk, because Render's
+// local filesystem is wiped on every restart/redeploy — local files would not persist.
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "technest-mobiles",
+    allowed_formats: ["jpg", "jpeg", "png", "webp", "gif"],
   },
 });
 
 const upload = multer({ storage });
 
-// ======================================================
-// AUTH ROUTES
-// ======================================================
 
-// SIGNUP
+
+
+
+const ADMIN_EMAIL = "touseefrafique2008@gmail.com";
+
 app.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -88,23 +92,25 @@ app.post("/signup", async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10);
 
-    await UserModel.create({
+    const user = await UserModel.create({
       name,
       email,
       password: hash,
     });
 
-    res.json({ message: "Signup successful" });
+    const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+    const token = jwt.sign({ id: user._id, isAdmin }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.json({ token, userId: user._id, isAdmin });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Only this email is treated as admin. Checked on the backend so it
-// can't be spoofed by editing frontend code or localStorage.
-const ADMIN_EMAIL = "touseefrafique2008@gmail.com";
 
-// LOGIN
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -127,7 +133,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// PROFILE
+
 app.get("/profile", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -141,16 +147,17 @@ app.get("/profile", (req, res) => {
   }
 });
 
-// ======================================================
-// SEED 100 MOBILES
-// ======================================================
+
+// NOTE: this seed route reads images from a local "uploads/" folder — it only works
+// when run locally (or once, right after deploying, before the filesystem resets).
+// It does not work as a way to add products on the live Render instance long-term.
 app.post("/api/mobiles/seed", async (req, res) => {
   try {
     const uploadsDir = path.join(process.cwd(), "uploads");
 
     const allFiles = fs.readdirSync(uploadsDir);
 
-    // Only keep actual image files (skip any stray non-image files in the folder)
+  
     const imageFiles = allFiles.filter((f) =>
       /\.(jpe?g|png|webp|gif)$/i.test(f)
     );
@@ -163,9 +170,7 @@ app.post("/api/mobiles/seed", async (req, res) => {
 
     const knownBrands = ["apple", "samsung", "oneplus", "oppo", "vivo", "xiaomi"];
 
-    // Derive the brand directly from each filename (e.g. "samsung_1.jpg" -> "samsung")
-    // instead of assigning brands by array position, which had no relationship
-    // to what the image actually showed.
+   
     const getBrandFromFilename = (filename) => {
       const lower = filename.toLowerCase();
       return knownBrands.find((b) => lower.includes(b)) || "unknown";
@@ -183,7 +188,7 @@ app.post("/api/mobiles/seed", async (req, res) => {
 
     await Mobile.deleteMany();
 
-    // Track a running count per brand so names go Apple 1, Apple 2, Samsung 1, etc.
+   
     const brandCounters = {};
 
     const mobiles = imageFiles
@@ -218,11 +223,7 @@ app.post("/api/mobiles/seed", async (req, res) => {
   }
 });
 
-// ======================================================
-// MOBILES API
-// ======================================================
 
-// GET ALL
 app.get("/api/mobiles", async (req, res) => {
   try {
     const data = await Mobile.find();
@@ -232,7 +233,6 @@ app.get("/api/mobiles", async (req, res) => {
   }
 });
 
-// GET ONE
 app.get("/api/mobiles/:id", async (req, res) => {
   try {
     const item = await Mobile.findById(req.params.id);
@@ -242,13 +242,13 @@ app.get("/api/mobiles/:id", async (req, res) => {
   }
 });
 
-// UPDATE
+
 app.patch("/api/mobiles/:id", requireAdmin, upload.single("image"), async (req, res) => {
   try {
     const update = {};
 
     if (req.body.name) update.name = req.body.name;
-    if (req.file) update.image = `uploads/${req.file.filename}`;
+    if (req.file) update.image = req.file.path; // Cloudinary returns the full hosted URL here
 
     const updated = await Mobile.findByIdAndUpdate(req.params.id, update, {
       new: true,
@@ -260,16 +260,12 @@ app.patch("/api/mobiles/:id", requireAdmin, upload.single("image"), async (req, 
   }
 });
 
-// ======================================================
-// HOME
-// ======================================================
+
 app.get("/", (req, res) => {
   res.send("API Running 🚀");
 });
 
-// ======================================================
-// START SERVER
-// ======================================================
+
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
