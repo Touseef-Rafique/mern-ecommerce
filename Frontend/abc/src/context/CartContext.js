@@ -20,8 +20,6 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
   }, [cart]);
 
-  // addToCart(product, delta) — delta can be positive (add/increment) or
-  // negative (decrement). If quantity would drop to 0, the item is removed.
   const addToCart = useCallback((product, delta = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item._id === product._id);

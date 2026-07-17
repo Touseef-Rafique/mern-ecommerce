@@ -11,7 +11,7 @@ const API_ROOT = "https://mern-ecommerce-rmt9.onrender.com";
 const AllProducts = () => {
   const [mobiles, setMobiles] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [status, setStatus] = useState("loading"); // loading | ready | error
+  const [status, setStatus] = useState("loading");
   const [sortBy, setSortBy] = useState("default");
   const [activeBrand, setActiveBrand] = useState("all");
   const [maxPrice, setMaxPrice] = useState(500000);

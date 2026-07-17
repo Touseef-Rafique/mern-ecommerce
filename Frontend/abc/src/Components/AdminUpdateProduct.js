@@ -8,14 +8,14 @@ const AdminUpdateProduct = () => {
   const { showToast } = useToast();
 
   const [mobiles, setMobiles] = useState([]);
-  const [status, setStatus] = useState("loading"); // loading | ready | error
+  const [status, setStatus] = useState("loading"); 
   const [selectedId, setSelectedId] = useState("");
   const [newName, setNewName] = useState("");
   const [newImageFile, setNewImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  // Load all products for the dropdown
+  
   useEffect(() => {
     setStatus("loading");
     fetch(`${API_ROOT}/api/mobiles`)
@@ -32,7 +32,7 @@ const AdminUpdateProduct = () => {
 
   const selectedProduct = mobiles.find((m) => m._id === selectedId);
 
-  // When a product is selected from the dropdown, pre-fill the name field
+  
   const handleSelectProduct = (id) => {
     setSelectedId(id);
     const product = mobiles.find((m) => m._id === id);
@@ -80,7 +80,7 @@ const AdminUpdateProduct = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        body: formData, // do NOT set Content-Type manually for FormData
+        body: formData, 
       });
 
       if (!res.ok) {
@@ -89,16 +89,16 @@ const AdminUpdateProduct = () => {
 
       const updated = await res.json();
 
-      // Refresh local list so dropdown + preview reflect the change immediately
+      
       setMobiles((prev) =>
         prev.map((m) => (m._id === updated._id ? updated : m))
       );
       setNewImageFile(null);
       setPreviewUrl(null);
-      showToast(`${updated.name} update ho gaya ✅`);
+      showToast(`${updated.name} updated✅`);
     } catch (err) {
       console.error("Update failed:", err);
-      showToast("Update fail hogaya, dobara try karein", "error");
+      showToast("Update fail , try again", "error");
     } finally {
       setSaving(false);
     }
@@ -118,8 +118,8 @@ const AdminUpdateProduct = () => {
       <div className="products-container">
         <h2 className="title">Admin · Update Product</h2>
         <div className="empty-state">
-          <h4>Products load nahi ho sake</h4>
-          <p>Backend chal raha hai check karein (https://mern-ecommerce-rmt9.onrender.com) aur page refresh karein.</p>
+          <h4>Products not</h4>
+          <p>Backend check (https://mern-ecommerce-rmt9.onrender.com) page refresh. </p>
         </div>
       </div>
     );
@@ -131,14 +131,14 @@ const AdminUpdateProduct = () => {
 
       <div className="card shadow-sm p-4" style={{ border: "1px solid var(--line)", borderRadius: "var(--radius)" }}>
         <div className="mb-3">
-          <label className="form-label fw-bold">Product select karein</label>
+          <label className="form-label fw-bold">Product select</label>
           <select
             className="form-select"
             value={selectedId}
             onChange={(e) => handleSelectProduct(e.target.value)}
             style={{ border: "1px solid var(--line)", borderRadius: 10, padding: "10px 12px", width: "100%" }}
           >
-            <option value="">-- Phone chunein --</option>
+            <option value="">-- Phone select --</option>
             {mobiles.map((m) => (
               <option key={m._id} value={m._id}>
                 {m.name} ({m.brand})
@@ -172,7 +172,7 @@ const AdminUpdateProduct = () => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">Product ka naam</label>
+              <label className="form-label fw-bold">Product name</label>
               <input
                 type="text"
                 className="form-control"
@@ -183,7 +183,7 @@ const AdminUpdateProduct = () => {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">Nayi image upload karein</label>
+              <label className="form-label fw-bold">New image upload please</label>
               <input
                 type="file"
                 accept="image/*"

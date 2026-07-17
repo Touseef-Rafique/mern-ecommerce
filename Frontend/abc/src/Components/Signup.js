@@ -19,7 +19,7 @@ const Signup = ({ setIsAuthenticated }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://mern-ecommerce-rmt9.onrender.com", {
+      const response = await fetch("https://mern-ecommerce-rmt9.onrender.com/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -28,9 +28,11 @@ const Signup = ({ setIsAuthenticated }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setIsAuthenticated(true);
-        navigate("/all-products");
-      } else {
+  localStorage.setItem("token", data.token);       // missing
+  localStorage.setItem("isAdmin", data.isAdmin ? "true" : "false"); // missing
+  setIsAuthenticated(true);
+  navigate("/all-products");
+} else {
         setError(data.message || "User already exists!");
       }
     } catch (error) {

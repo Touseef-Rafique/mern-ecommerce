@@ -10,9 +10,7 @@ const MainNav = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Read once on render — set at login time, cleared at logout.
-  // Checked again on the backend for any admin action, so this is
-  // just for hiding/showing the UI link, not the real security boundary.
+ 
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   const isActive = (path) => location.pathname.startsWith(path);

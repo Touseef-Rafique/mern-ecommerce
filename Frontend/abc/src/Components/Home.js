@@ -74,7 +74,7 @@ function Home() {
         </div>
       </section>
 
-      {/* ===== Why shop with us ===== */}
+      
       <section className="tn-why">
         <div className="container tn-why-grid">
           <div className="tn-why-item">

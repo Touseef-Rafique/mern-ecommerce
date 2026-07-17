@@ -29,9 +29,7 @@ const App = () => {
     return localStorage.getItem("token") ? true : false;
   });
 
-  // UI-level gate only — hides the route for non-admins typing the URL
-  // directly. The real security boundary is the backend's requireAdmin
-  // check, since this value lives in localStorage and could be edited.
+  
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   return (

@@ -5,7 +5,7 @@ const QUICK_REPLIES = [
   { q: "What's your return policy?", a: "You can return any phone within 7 days of delivery if it's unused and in its original packaging. Contact us with your order number to start a return." },
   { q: "Do you offer installments?", a: "Yes — select installment plans are available at checkout for eligible cards. Look for the 'Installment Plan' link in the footer." },
   { q: "Is this phone PTA approved?", a: "All phones listed on Technest are PTA-approved and safe to use on Pakistani networks." },
-];
+  ];
 
 const SupportWidget = () => {
   const [open, setOpen] = useState(false);
