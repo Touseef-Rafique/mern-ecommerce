@@ -11,6 +11,12 @@ const AdminUpdateProduct = () => {
   const [status, setStatus] = useState("loading"); 
   const [selectedId, setSelectedId] = useState("");
   const [newName, setNewName] = useState("");
+  const [newPrice, setNewPrice] = useState("");
+
+const [ram, setRam] = useState("");
+const [storage, setStorage] = useState("");
+const [battery, setBattery] = useState("");
+const [camera, setCamera] = useState("");
   const [newImageFile, setNewImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -34,13 +40,21 @@ const AdminUpdateProduct = () => {
 
   
   const handleSelectProduct = (id) => {
-    setSelectedId(id);
-    const product = mobiles.find((m) => m._id === id);
-    setNewName(product?.name || "");
-    setNewImageFile(null);
-    setPreviewUrl(null);
-  };
+  setSelectedId(id);
 
+  const product = mobiles.find((m) => m._id === id);
+
+  setNewName(product?.name || "");
+  setNewPrice(product?.price || "");
+
+  setRam(product?.specs?.ram || "");
+  setStorage(product?.specs?.storage || "");
+  setBattery(product?.specs?.battery || "");
+  setCamera(product?.specs?.camera || "");
+
+  setNewImageFile(null);
+  setPreviewUrl(null);
+};
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -64,14 +78,18 @@ const AdminUpdateProduct = () => {
     }
 
     const formData = new FormData();
-    if (newName.trim()) formData.append("name", newName.trim());
-    if (newImageFile) formData.append("image", newImageFile);
 
-    if (!newName.trim() && !newImageFile) {
-      showToast("Naam ya image mein se kam az kam ek change karein", "error");
-      return;
-    }
+formData.append("name", newName);
+formData.append("price", newPrice);
 
+formData.append("ram", ram);
+formData.append("storage", storage);
+formData.append("battery", battery);
+formData.append("camera", camera);
+
+if (newImageFile) {
+  formData.append("image", newImageFile);
+}
     setSaving(true);
     try {
       const token = localStorage.getItem("token");
@@ -171,16 +189,81 @@ const AdminUpdateProduct = () => {
               )}
             </div>
 
+            
             <div className="mb-3">
-              <label className="form-label fw-bold">Product name</label>
-              <input
-                type="text"
-                className="form-control"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                style={{ border: "1px solid var(--line)", borderRadius: 10, padding: "10px 12px", width: "100%" }}
-              />
-            </div>
+  <label className="form-label fw-bold">Product name</label>
+  <input
+    type="text"
+    className="form-control"
+    value={newName}
+    onChange={(e) => setNewName(e.target.value)}
+    style={{
+      border: "1px solid var(--line)",
+      borderRadius: 10,
+      padding: "10px 12px",
+      width: "100%",
+    }}
+  />
+</div>
+<div className="mb-3">
+  <label className="form-label fw-bold">Price</label>
+  <input
+    type="number"
+    className="form-control"
+    value={newPrice}
+    onChange={(e) => setNewPrice(e.target.value)}
+    style={{
+      border: "1px solid var(--line)",
+      borderRadius: 10,
+      padding: "10px 12px",
+      width: "100%",
+    }}
+  />
+</div>
+
+<div className="mb-3">
+  <label className="form-label fw-bold">RAM</label>
+  <input
+    type="text"
+    className="form-control"
+    value={ram}
+    onChange={(e) => setRam(e.target.value)}
+  />
+</div>
+
+<div className="mb-3">
+  <label className="form-label fw-bold">Storage</label>
+  <input
+    type="text"
+    className="form-control"
+    value={storage}
+    onChange={(e) => setStorage(e.target.value)}
+  />
+</div>
+
+<div className="mb-3">
+  <label className="form-label fw-bold">Battery</label>
+  <input
+    type="text"
+    className="form-control"
+    value={battery}
+    onChange={(e) => setBattery(e.target.value)}
+  />
+</div>
+
+<div className="mb-3">
+  <label className="form-label fw-bold">Camera</label>
+  <input
+    type="text"
+    className="form-control"
+    value={camera}
+    onChange={(e) => setCamera(e.target.value)}
+  />
+</div>
+
+
+
+
 
             <div className="mb-3">
               <label className="form-label fw-bold">New image upload please</label>
