@@ -247,19 +247,35 @@ app.patch("/api/mobiles/:id", requireAdmin, upload.single("image"), async (req, 
   try {
     const update = {};
 
+    // Basic fields
     if (req.body.name) update.name = req.body.name;
-    if (req.file) update.image = req.file.path; // Cloudinary returns the full hosted URL here
+    if (req.body.price) update.price = Number(req.body.price);
 
-    const updated = await Mobile.findByIdAndUpdate(req.params.id, update, {
-      new: true,
-    });
+    // Specifications
+    update.specs = {
+      ram: req.body.ram,
+      storage: req.body.storage,
+      battery: req.body.battery,
+      camera: req.body.camera,
+    };
+
+    // Image
+    if (req.file) {
+      update.image = req.file.path;
+    }
+
+    const updated = await Mobile.findByIdAndUpdate(
+      req.params.id,
+      update,
+      { new: true }
+    );
 
     res.json(updated);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 app.get("/", (req, res) => {
   res.send("API Running 🚀");
