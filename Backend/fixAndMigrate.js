@@ -3,18 +3,17 @@ dotenv.config();
 
 import fs from "fs";
 import path from "path";
-import { v2 as Cloudinary } from "Cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
 import connectDB from "./connection.js";
 import Mobile from "./models/Mobile.js";
 
 
-Cloudinary.config({
-  cloud_name: process.env.Cloudinary_CLOUD_NAME,
-  api_key: process.env.Cloudinary_API_KEY,
-  api_secret: process.env.Cloudinary_API_SECRET,
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
 
 const uploadsDir = path.join(process.cwd(), "uploads");
 
@@ -85,8 +84,7 @@ async function start() {
       );
 
 
-      const result = await Cloudinary.uploader.upload(
-        filePath,
+const result = await cloudinary.uploader.upload(        filePath,
         {
           folder:"technest-mobiles",
           use_filename:true,
