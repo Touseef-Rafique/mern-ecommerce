@@ -7,7 +7,7 @@
 import fs from "fs";
 import path from "path";
 import "../src/config/env.js";
-import cloudinary from "../src/config/cloudinary.js";
+import Cloudinary from "../src/config/Cloudinary.js";
 import { connectDB, disconnectDB } from "../src/config/db.js";
 import Mobile from "../src/models/Mobile.js";
 
@@ -57,7 +57,7 @@ async function run() {
       }
 
       console.log(`Uploading ${product.name} -> ${file}`);
-      const result = await cloudinary.uploader.upload(path.join(uploadsDir, file), {
+      const result = await Cloudinary.uploader.upload(path.join(uploadsDir, file), {
         folder: "technest-mobiles",
         use_filename: true,
         unique_filename: false,
