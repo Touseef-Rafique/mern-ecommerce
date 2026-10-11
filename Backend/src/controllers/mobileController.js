@@ -1,4 +1,4 @@
-import { destroyByUrl } from "../config/cloudinary.js";
+import { destroyByUrl } from "../config/Cloudinary.js";
 import Mobile from "../models/Mobile.js";
 import { AppError } from "../utils/AppError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
