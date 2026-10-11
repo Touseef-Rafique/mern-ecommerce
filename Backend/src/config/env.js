@@ -69,7 +69,7 @@ export const env = {
     from: process.env.SMTP_FROM || process.env.SMTP_USER,
   },
 
-  Cloudinary: {
+  cloudinary: {
     cloudName: process.env.Cloudinary_CLOUD_NAME,
     apiKey: process.env.Cloudinary_API_KEY,
     apiSecret: process.env.Cloudinary_API_SECRET,
@@ -89,6 +89,6 @@ if (!env.smtp.host) {
       : "ℹ️  SMTP not configured. Emails will be printed to the console in development."
   );
 }
-if (!env.Cloudinary.cloudName || !env.Cloudinary.apiKey || !env.Cloudinary.apiSecret) {
+if (!env.cloudinary.cloudName || !env.cloudinary.apiKey || !env.cloudinary.apiSecret) {
   console.warn("⚠️  Cloudinary credentials are missing. Image uploads will fail.");
 }
